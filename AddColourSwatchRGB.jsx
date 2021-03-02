@@ -1,70 +1,72 @@
 //AddColourSwatchRGB.jsx
 //An InDesign JavaScript 
-/*  
-"AddColourSwatchRGB.jsx" 1.0 8 February 2021
-*/
-// Creates multiple RGB colour swatches
-// Make sure that one of your colour swatch is in RGB. 
-//If all your swatches are in CMYK it will throw an error.
+
+//AddColourSwatchRGB.jsx 1.0 8 February 2021
+
+//Creates multiple RGB colour swatches from HEX values
+//Make sure that one of your colour swatch is in RGB otherwise it will throw an error
 
 
 
 const colorSwatches = [
-  {
-    swatchName: 'White',
-    r: 255,
-    g: 255,
-    b: 255
-  },
-  {
-    swatchName: 'Accent',
-    r: 253,
-    g: 149,
-    b: 88
-  },
-  {
-    swatchName: 'GreyLight',
-    r: 245,
-    g: 245,
-    b: 245
-  },
-  {
-    swatchName: 'GreyDark',
-    r: 162,
-    g: 162,
-    b: 162,
-  },
-  {
-    swatchName: 'BodyText',
-    r: 188,
-    g: 188,
-    b: 188
-  },
-  {
-    swatchName: 'BodyTextAlt',
-    r: 41,
-    g: 56,
-    b: 69
-  }
-];
 
-(function () {
-  //Make sure a document is open.
-  if (app.documents.length != 0) {
-    getSwatchName(colorSwatches);
+  {
+    name: 'Blue purple',
+    hexCode: '#A4B0F5'
+  },
+  {
+    name: 'Orange dark',
+    hexCode: '#F58F29'
   }
-  else {
-    alert("Please open a document.");
-  }
-})();
+]
 
-function getSwatchName(swatch) {
-  for (i = 0; i < swatch.length; i++) {
-    app.activeDocument.colors.add({
-      colorValue: [swatch[i].r, swatch[i].g, swatch[i].b],
-      name: swatch[i].swatchName
-    });
+function hexToRGB(hex) {
+
+  for (var i = 0; i < hex.length; i++) {
+    if (hex[i].hexCode.charAt(0) === '#') {
+      hex[i].hexCode = hex[i].hexCode.substr(1);
+    }
+
+    if ((hex[i].hexCode.length < 2) || (hex[i].hexCode.length > 6)) {
+      return false;
+    }
+
+    var values = hex[i].hexCode.split(''),
+      r,
+      g,
+      b;
+
+    if (hex[i].hexCode.length === 6) {
+      r = parseInt(values[0].toString() + values[1].toString(), 16);
+      g = parseInt(values[2].toString() + values[3].toString(), 16);
+      b = parseInt(values[4].toString() + values[5].toString(), 16);
+    } else if (hex[i].hexCode.length === 3) {
+      r = parseInt(values[0].toString() + values[0].toString(), 16);
+      g = parseInt(values[1].toString() + values[1].toString(), 16);
+      b = parseInt(values[2].toString() + values[2].toString(), 16);
+    } else {
+      return false;
+    }
+
+    if (!hex[i].name || hex[i].name === '') {
+      app.activeDocument.colors.add({
+        colorValue: [r, g, b],
+        name: "R=" + r + ' ' + "G=" + g + ' ' + "B=" + b
+      });
+    } else {
+      app.activeDocument.colors.add({
+        colorValue: [r, g, b],
+        name: hex[i].name
+      });
+    }
+
   }
 }
 
 
+function main() {
+  //Make sure a document is open.
+  app.documents.length != 0 ? hexToRGB(colorSwatches) : alert('Please open a document');
+}
+
+main();
